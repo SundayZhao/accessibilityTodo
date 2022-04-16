@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:background="@android:color/white">
+
+            <TextView
+                android:id="@+id/textview_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart='true'
+                android:text="是否开启语音提示"
+                android:textSize="30sp" />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd='true'
+                android:layout_centerVertical='true'
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textview_selectfront"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="请选择您需要的字体大小"
+            android:textSize="30sp" />
+
+        <com.xw.repo.BubbleSeekBar
+            android:id="@+id/seekBar_frontsize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:bsb_auto_adjust_section_mark='true'
+            app:bsb_bubble_color="@color/red"
+            app:bsb_bubble_text_color="@color/colorPrimaryDark"
+            app:bsb_hide_bubble='true'
+            app:bsb_max="0"
+            app:bsb_min="5"
+            app:bsb_progress="0"
+            app:bsb_second_track_color="@color/red"
+            app:bsb_section_count="4"
+            app:bsb_section_text_position="below_section_mark"
+            app:bsb_section_text_size="30sp"
+            app:bsb_show_progress_in_float="false"
+            app:bsb_show_section_mark='false'
+            app:bsb_touch_to_seek='true'
+            app:bsb_track_color="@color/light_blue_A400" />
+
+        <TextView
+            android:id="@+id/textview_selectfrontcolor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="请选择您需要的字体颜色"
+            android:textSize="30sp" />
+
+        <com.flask.colorpicker.ColorPickerView
+            android:id="@+id/color_picker_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:alphaSlider="false"
+            app:density="3"
+            app:lightnessSlider="false"
+            app:wheelType="CIRCLE" />
+
+        />
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,60 @@
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ConstraintSet android:id="@+id/rest">
+        <Constraint
+            android:id="@id/recyclerview_todo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/upward"
+        app:deriveConstraintsFrom="@id/rest">
+        <Constraint
+            android:id="@id/recyclerview_todo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="parent"
+            />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/downward"
+        app:deriveConstraintsFrom="@id/rest">
+        <Constraint
+            android:id="@id/recyclerview_todo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf ="parent"
+            />
+    </ConstraintSet>
+
+    <Transition
+        app:constraintSetEnd="@+id/upward"
+        app:constraintSetStart="@+id/rest"
+        app:duration="300" >
+        <OnSwipe
+            app:dragDirection="dragStart"
+            app:onTouchUp="autoComplete"
+            app:touchAnchorId="@id/recyclerview_todo"
+            app:touchAnchorSide="start"
+            app:touchRegionId="@id/recyclerview_todo" />
+    </Transition>
+
+
+    <Transition
+        app:constraintSetEnd="@+id/downward"
+        app:constraintSetStart="@+id/rest"
+        app:duration="300" >
+        <OnSwipe
+            app:dragDirection="dragEnd"
+            app:onTouchUp="autoComplete"
+            app:touchAnchorId="@id/recyclerview_todo"
+            app:touchAnchorSide="end"
+            app:touchRegionId="@id/recyclerview_todo" />
+    </Transition>
+</MotionScene>
