@@ -64,22 +64,30 @@ public class DoneCardViewAdapter extends RecyclerView.Adapter<DoneCardViewAdapte
         holder.withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Card temp=mData.get(position);
                 todoCardView.addItem(mData.get(position));
                 mData.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mData.size());
+                temp.getListener().changeItem(1);
+                temp.getListener().changeItem(0);
             }
         });
         holder.delButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Card temp=mData.get(position);
                 mData.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mData.size());
+                temp.getListener().changeItem(1);;
+
             }
         });
     }
-
+    public List<Card>  getData(){
+        return mData;
+    }
     @Override
     public int getItemCount() {
         return mData.size();
@@ -116,5 +124,7 @@ public class DoneCardViewAdapter extends RecyclerView.Adapter<DoneCardViewAdapte
 
     public interface OnItemClickListener  {
         public void notifyItem(int Type,Card card) ;
+        public void changeItem(int Type) ;
     }
+
 }

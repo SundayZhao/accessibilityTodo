@@ -58,19 +58,23 @@ public class TodoCardViewAdapter extends RecyclerView.Adapter<TodoCardViewAdapte
         holder.doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Card temp=mData.get(position);
                 doneCardViewAdapter.addItem(mData.get(position));
                 mData.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mData.size());
-
+                temp.getListener().changeItem(0);
+                temp.getListener().changeItem(1);
             }
         });
         holder.delButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Card temp=mData.get(position);
                 mData.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mData.size());
+                temp.getListener().changeItem(0);
             }
         });
     }
@@ -80,6 +84,9 @@ public class TodoCardViewAdapter extends RecyclerView.Adapter<TodoCardViewAdapte
         return mData.size();
     }
 
+    public List<Card>  getData(){
+        return mData;
+    }
     public void setDoneCardViewAdapter(DoneCardViewAdapter doneCardViewAdapter) {
         this.doneCardViewAdapter = doneCardViewAdapter;
     }

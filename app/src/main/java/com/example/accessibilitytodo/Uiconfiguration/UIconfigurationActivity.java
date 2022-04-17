@@ -16,7 +16,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,7 +30,6 @@ import com.example.accessibilitytodo.todocard.TodoListActivity;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.OnColorSelectedListener;
-import com.kyleduo.switchbutton.SwitchButton;
 import com.xw.repo.BubbleSeekBar;
 
 import java.text.DecimalFormat;
@@ -61,6 +59,7 @@ public class UIconfigurationActivity extends Activity implements SensorEventList
     //上一次触发传感器的XYZ
     private float mAngle[] = new float[3];
     private static final float NS2S = 1.0f / 1000000000.0f;
+    private double[] oldDegree = new double[]{0, 0, 0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +116,7 @@ public class UIconfigurationActivity extends Activity implements SensorEventList
     }
 
     private void initSeekbar() {
-        //todo:动态设置滑动条位置
+        textview_FrontSize.setFocusable(true);
         seekBar.getConfigBuilder().max(4).min(0).progress((CongratulationHelper.getFrontSize() - 1) / 0.3f).build();
         seekBar.setContentDescription("左滑减小字体大小，右滑增加字体大小。当前字号倍率:" + CongratulationHelper.getFrontSize() + "倍");
         seekBar.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
@@ -179,7 +178,6 @@ public class UIconfigurationActivity extends Activity implements SensorEventList
         textview_FrontSize.setTextColor(CongratulationHelper.getTextColor());
         textview_FrontColor.setTextColor(CongratulationHelper.getTextColor());
         nextButton.setTextSize(CongratulationHelper.getTextColor());
-        //TODO:改变按钮背景颜色，用边框白
         seekBar.getConfigBuilder().sectionTextColor(CongratulationHelper.getTextColor()).build();
         seekBar.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
             @NonNull
@@ -215,24 +213,57 @@ public class UIconfigurationActivity extends Activity implements SensorEventList
     protected void onResume() {
         super.onResume();
         Log.w("旋转加速感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_UI));
+        Log.i("角度感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI));
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+            final float dT = (sensorEvent.timestamp - mTimestamp);
+            if (dT * NS2S > 2) {
+                double degreeX = sensorEvent.values[0] / Math.PI * 180;
+                double degreeY = sensorEvent.values[1] / Math.PI * 180;
+                if (Math.abs(degreeX - oldDegree[0]) > 30) {
+                    oldDegree[0] = degreeX;
+                    mTimestamp = sensorEvent.timestamp;
+                    if (Math.abs(degreeX) > 30)
+                        if (oldDegree[0] > 0) {
+                            Log.i("角度感应", "X减少" + oldDegree[0]);
+                            textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_DOWN);
+                        } else {
+                            Log.i("角度感应", "X增加" + oldDegree[0]);
+                            textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_UP);
+                        }
+                }
+                if (Math.abs(oldDegree[1] - degreeY) > 30) {
+                    oldDegree[1] = degreeY;
+                    mTimestamp = sensorEvent.timestamp;
+                    if (Math.abs(degreeY) > 30)
+                        if (oldDegree[1] > 0) {
+                            Log.i("角度感应", "Y增加" + oldDegree[1]);
+                            textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_UP);
+                        } else {
+                            Log.i("角度感应", "Y减少" + oldDegree[1]);
+                            textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_DOWN);
+                        }
+
+                }
+            }
+        }
         if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE) {//陀螺仪角度发生变化
             final float dT = (sensorEvent.timestamp - mTimestamp);
             if (dT * NS2S > 2) {
                 if (Math.abs(sensorEvent.values[0]) > 0.3 && Math.abs(sensorEvent.values[0]) > Math.abs(sensorEvent.values[1]) && Math.abs(sensorEvent.values[0]) > Math.abs(sensorEvent.values[2])) {
                     Log.i("旋转加速感应", "发送X");
                     mTimestamp = sensorEvent.timestamp;
-                    if(sensorEvent.values[0]>0)
+                    if (sensorEvent.values[0] > 0)
                         textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_DOWN);
                     else
                         textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_UP);
-                } else if (Math.abs(sensorEvent.values[1]) > 0.3&& Math.abs(sensorEvent.values[1]) > Math.abs(sensorEvent.values[0]) && Math.abs(sensorEvent.values[1]) > Math.abs(sensorEvent.values[2])) {
+                } else if (Math.abs(sensorEvent.values[1]) > 0.3 && Math.abs(sensorEvent.values[1]) > Math.abs(sensorEvent.values[0]) && Math.abs(sensorEvent.values[1]) > Math.abs(sensorEvent.values[2])) {
                     Log.i("旋转加速感应", "发送Y");
                     mTimestamp = sensorEvent.timestamp;
-                    if(sensorEvent.values[1]>0)
+                    if (sensorEvent.values[1] > 0)
                         textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_UP);
                     else
                         textview_FrontColor.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_DOWN);

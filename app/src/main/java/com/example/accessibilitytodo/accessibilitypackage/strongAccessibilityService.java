@@ -73,11 +73,11 @@ public class strongAccessibilityService  extends AccessibilityService {
                 break;
             case EVENT_ROTATE_ACCELERATE_Y_UP:
                 Log.i(TAG,"Y轴向右，右翻");
-                AccessibilityUtil.coordinateSliding(this,300,500,500,500,200);
+                AccessibilityUtil.coordinateSliding(this,100,500,500,500,200);
                 break;
             case EVENT_ROTATE_ACCELERATE_Y_DOWN:
                 Log.i(TAG,"Y轴向左，左翻");
-                AccessibilityUtil.coordinateSliding(this,500,500,300,500,200);
+                AccessibilityUtil.coordinateSliding(this,500,500,100,500,200);
                 break;
         }
     }
