@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,7 +8,43 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/button_addtodo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/transparent"
+                android:contentDescription="添加新的代办事项"
+                android:focusable="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/addtodo" />
+
+            <ImageButton
+                android:id="@+id/button_setting"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/transparent"
+                android:contentDescription="打开设置"
+                android:focusable="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/setting" />
+        </LinearLayout>
+
+
         <TextView
+            android:id="@+id/textview_todo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -22,16 +57,19 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            android:id="@+id/textview_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:focusable="false"
             android:text="已做事项"
             android:textSize="20sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_done"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:focusable="false" />
 
     </LinearLayout>
 </ScrollView>

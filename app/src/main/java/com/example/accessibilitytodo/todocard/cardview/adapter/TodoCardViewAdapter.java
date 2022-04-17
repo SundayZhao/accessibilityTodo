@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.accessibilitytodo.R;
 import com.example.accessibilitytodo.Uiconfiguration.CongratulationHelper;
+import com.example.accessibilitytodo.todocard.TodoListActivity;
 import com.example.accessibilitytodo.todocard.cardview.entity.Card;
 import com.example.accessibilitytodo.todocard.cardview.widget.TodoCardView;
 
@@ -46,6 +47,14 @@ public class TodoCardViewAdapter extends RecyclerView.Adapter<TodoCardViewAdapte
     public void onBindViewHolder(final ViewHolder holder, int position) {
         //设置颜色变化
         ((TodoCardView) holder.itemView).changeTheme(colors[position % 6]);
+        holder.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mData.get(position).getListener().notifyItem(TodoListActivity.ADD_RESULT_NOTIFY_TODO,mData.get(position));
+            }
+        });
+        holder.header.setText(mData.get(position).getDate());
+        holder.content.setText(mData.get(position).getContent());
         holder.doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +92,7 @@ public class TodoCardViewAdapter extends RecyclerView.Adapter<TodoCardViewAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout top;
         ImageView center;
-        EditText comment;
+        TextView header;
         TextView content;
         ImageButton doneButton;
         ImageButton delButton;
@@ -92,6 +101,7 @@ public class TodoCardViewAdapter extends RecyclerView.Adapter<TodoCardViewAdapte
             super(view);
             top = (RelativeLayout) view.findViewById(R.id.top);
             center = (ImageView) view.findViewById(R.id.center);
+            header=(TextView)view.findViewById(R.id.header) ;
             content = (TextView) view.findViewById(R.id.content);
             doneButton=(ImageButton)view.findViewById(R.id.button_done);
             delButton=(ImageButton)view.findViewById(R.id.button_del);

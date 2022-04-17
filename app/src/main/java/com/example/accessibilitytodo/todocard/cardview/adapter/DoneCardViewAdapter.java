@@ -1,6 +1,7 @@
 package com.example.accessibilitytodo.todocard.cardview.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.accessibilitytodo.R;
 import com.example.accessibilitytodo.Uiconfiguration.CongratulationHelper;
+import com.example.accessibilitytodo.todocard.TodoListActivity;
+import com.example.accessibilitytodo.todocard.addNewListActivity;
 import com.example.accessibilitytodo.todocard.cardview.entity.Card;
 import com.example.accessibilitytodo.todocard.cardview.widget.DoneCardView;
 import com.example.accessibilitytodo.todocard.cardview.widget.TodoCardView;
@@ -30,7 +33,6 @@ public class DoneCardViewAdapter extends RecyclerView.Adapter<DoneCardViewAdapte
     private  TodoCardViewAdapter todoCardView;
 
     int[] colors = {0xff01a3a1, 0xff91bbeb, 0xff01b1bf, 0xffff9d62, 0xff2d3867, 0xffee697e};//颜色组
-
     public void setData(List<Card> list) {
         this.mData = list;
     }
@@ -51,6 +53,14 @@ public class DoneCardViewAdapter extends RecyclerView.Adapter<DoneCardViewAdapte
     public void onBindViewHolder(final ViewHolder holder, int position) {
         //设置颜色变化
         ((DoneCardView) holder.itemView).changeTheme(colors[position % 6]);
+        holder.content.setText(mData.get(position).getContent());
+        holder.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mData.get(position).getListener().notifyItem(TodoListActivity.ADD_RESULT_NOTIFY_DONE,mData.get(position));
+            }
+        });
+        holder.header.setText(mData.get(position).getDate());
         holder.withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,7 +98,7 @@ public class DoneCardViewAdapter extends RecyclerView.Adapter<DoneCardViewAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout top;
         ImageView center;
-        EditText comment;
+        TextView header;
         TextView content;
         ImageButton withdrawButton;
         ImageButton delButton;
@@ -97,9 +107,14 @@ public class DoneCardViewAdapter extends RecyclerView.Adapter<DoneCardViewAdapte
             super(view);
             top = (RelativeLayout) view.findViewById(R.id.top);
             center = (ImageView) view.findViewById(R.id.center);
+            header=(TextView)view.findViewById(R.id.header) ;
             content = (TextView) view.findViewById(R.id.content);
             withdrawButton=(ImageButton)view.findViewById(R.id.button_withdraw);
             delButton=(ImageButton)view.findViewById(R.id.button_del);
         }
+    }
+
+    public interface OnItemClickListener  {
+        public void notifyItem(int Type,Card card) ;
     }
 }

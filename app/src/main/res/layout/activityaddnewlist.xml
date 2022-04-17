@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_margin="10dp"
+>
+
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/tv_time"
+            android:textSize="40sp"
+            android:text="2020 - 12 - 12"
+            android:nextFocusDown="@id/et"
+            android:textColor="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="#CBE7D9"
+        android:layout_width="match_parent"
+        android:layout_weight="9"
+        android:layout_height="0dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/et"
+                android:padding="20dp"
+                android:gravity="top"
+                android:text="HAHAHAHA"
+                android:textColor="#333"
+                android:textSize="27sp"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nextFocusUp="@id/tv_time"
+                android:nextFocusDown="@id/fab"/>
+
+        </ScrollView>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+</LinearLayout>
+
+<DatePicker
+    android:id="@+id/datePicker"
+    android:background="#fff"
+    android:layout_centerInParent="true"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    />
+
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/fab"
+    android:src="@drawable/addcheck"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:scaleType="fitXY"
+    android:layout_margin="16dp"
+    android:nextFocusUp="@id/et"
+    android:contentDescription="点击完成一项事务"
+    app:backgroundTint="@color/deepskyblue"
+    app:elevation="5dp"
+    app:pressedTranslationZ="12dp"
+    app:fabSize="normal" />
+
+</RelativeLayout>

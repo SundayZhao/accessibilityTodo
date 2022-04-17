@@ -6,8 +6,7 @@
 
 
     android:accessibilityFeedbackType="feedbackAllMask"
-    android:notificationTimeout="100"
-    android:settingsActivity="com.angcyo.SettingsActivity"
+    android:notificationTimeout="1000"
     android:canPerformGestures="true"
     android:accessibilityFlags="flagDefault"
     android:canRetrieveWindowContent="true"/>

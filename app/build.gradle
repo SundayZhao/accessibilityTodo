@@ -63,4 +63,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.android.support.constraint/constraint-layout
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
 
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
+
 }

@@ -11,7 +11,6 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -20,21 +19,19 @@ public class strongAccessibilityService  extends AccessibilityService {
     private TextToSpeech textToSpeech;
 
     //来自XYZ轴的手机旋转
-    public static final int  EVENT_ROTATE_ACCELERATE_X = 664834952;
-    public static final int  EVENT_ROTATE_ACCELERATE_Y = 664834953;
+    public static final int  EVENT_ROTATE_ACCELERATE_X_UP = 664834952;
+    public static final int  EVENT_ROTATE_ACCELERATE_X_DOWN = 664834953;
+    public static final int  EVENT_ROTATE_ACCELERATE_Y_UP = 664834954;
+    public static final int  EVENT_ROTATE_ACCELERATE_Y_DOWN = 664834955;
     public static final int  EVENT_ROTATE_ACCELERATE_Z = 664834954;
 
     @Override
     protected void onServiceConnected() {
         Log.i(TAG, "开始连接");
+        AccessibilityUtil.Back(this);
         super.onServiceConnected();
         AccessibilityServiceInfo accessibilityServiceInfo = new AccessibilityServiceInfo();
-        accessibilityServiceInfo.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                | AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                | AccessibilityEvent.TYPE_VIEW_CLICKED
-                | AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-                | AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED
-                |AccessibilityEvent.TYPE_VIEW_SCROLLED ;
+        accessibilityServiceInfo.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         accessibilityServiceInfo.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
         accessibilityServiceInfo.notificationTimeout = 0;
         accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;
@@ -56,15 +53,7 @@ public class strongAccessibilityService  extends AccessibilityService {
         @SuppressLint("SwitchIntDef")
         @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        // 此方法是在主线程中回调过来的，所以消息是阻塞执行的
-            Log.i(TAG,event.getEventType()+"");
         switch (event.getEventType()) {
-            /**
-             * AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED，
-             * 而会调用AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED，
-             * 而AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED只要内容改变后都会调用，
-             * 所以一般是使用AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED来作为监测事件的
-             */
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 Log.i(TAG, "TYPE_WINDOW_STATE_CHANGED 界面改变");
                 break;
@@ -74,14 +63,21 @@ public class strongAccessibilityService  extends AccessibilityService {
             case AccessibilityEvent.TYPE_VIEW_SCROLLED:
                 Log.i(TAG, "TYPE_VIEW_SCROLLED");
                 break;
-            case EVENT_ROTATE_ACCELERATE_X:
-                Log.i(TAG,"X轴旋转");
+            case EVENT_ROTATE_ACCELERATE_X_UP:
+                Log.i(TAG,"X轴向上，上翻");
+                AccessibilityUtil.coordinateSliding(this,300,900,300,500,200);
                 break;
-            case EVENT_ROTATE_ACCELERATE_Y:
-                Log.i(TAG,"Y轴旋转");
+            case EVENT_ROTATE_ACCELERATE_X_DOWN:
+                Log.i(TAG,"X轴向下，下翻");
+                AccessibilityUtil.coordinateSliding(this,300,500,300,900,200);
                 break;
-            case EVENT_ROTATE_ACCELERATE_Z:
-                Log.i(TAG,"Z轴旋转");
+            case EVENT_ROTATE_ACCELERATE_Y_UP:
+                Log.i(TAG,"Y轴向右，右翻");
+                AccessibilityUtil.coordinateSliding(this,300,500,500,500,200);
+                break;
+            case EVENT_ROTATE_ACCELERATE_Y_DOWN:
+                Log.i(TAG,"Y轴向左，左翻");
+                AccessibilityUtil.coordinateSliding(this,500,500,300,500,200);
                 break;
         }
     }

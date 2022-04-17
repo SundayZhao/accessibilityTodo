@@ -22,12 +22,13 @@ public class TodoCardView extends LinearLayout {
     RelativeLayout topLayout;
     ImageView centerLayout;
     TextView content;
+    TextView header;
 
     TopDrawable topDrawable;
     CenterDrawable centerDrawable;
     BottomDrawable bottomDrawable;
     GradientDrawable myGrad;
-
+    GradientDrawable myHeader;
     float fontSize=20;
     int fontColor=0x000000ff;
     public void setCardFont(float fontSize,int fontColor){
@@ -36,6 +37,8 @@ public class TodoCardView extends LinearLayout {
         if(content!=null){
             content.setTextColor(this.fontColor);
             content.setTextSize(this.fontSize);
+            header.setTextColor(this.fontColor);
+            header.setTextSize(this.fontSize);
         }
     }
 
@@ -67,8 +70,9 @@ public class TodoCardView extends LinearLayout {
         topLayout = (RelativeLayout) layout.findViewById(R.id.top);
         centerLayout = (ImageView) layout.findViewById(R.id.center);
         content = (TextView) layout.findViewById(R.id.content);
+        header = (TextView) layout.findViewById(R.id.header);
         myGrad = (GradientDrawable) content.getBackground();
-
+        myHeader=(GradientDrawable) header.getBackground();
         topDrawable = new TopDrawable();
         topLayout.setBackground(topDrawable);
 
@@ -84,6 +88,7 @@ public class TodoCardView extends LinearLayout {
     public void changeTheme(final int color) {
         //文字背景颜色
         myGrad.setColor(color);
+        myHeader.setColor(color);
         //顶部阴影颜色
         topDrawable.setColor(color);
 //        中部阴影颜色
