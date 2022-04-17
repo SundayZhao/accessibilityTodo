@@ -19,10 +19,10 @@ public class strongAccessibilityService  extends AccessibilityService {
     private TextToSpeech textToSpeech;
 
     //来自XYZ轴的手机旋转
-    public static final int  EVENT_ROTATE_ACCELERATE_X_UP = 664834952;
-    public static final int  EVENT_ROTATE_ACCELERATE_X_DOWN = 664834953;
-    public static final int  EVENT_ROTATE_ACCELERATE_Y_UP = 664834954;
-    public static final int  EVENT_ROTATE_ACCELERATE_Y_DOWN = 664834955;
+    public static final int  EVENT_ROTATE_ACCELERATE_X_UP = 0xFF123456;
+    public static final int  EVENT_ROTATE_ACCELERATE_X_DOWN = 0xFF123454;
+    public static final int  EVENT_ROTATE_ACCELERATE_Y_UP = 0xFF123453;
+    public static final int  EVENT_ROTATE_ACCELERATE_Y_DOWN = 0xFF123452;
     public static final int  EVENT_ROTATE_ACCELERATE_Z = 664834954;
 
     @Override
@@ -85,21 +85,5 @@ public class strongAccessibilityService  extends AccessibilityService {
     @Override
     public void onInterrupt() {
 
-    }
-
-    public static boolean isServiceON(Context context, String className){
-        ActivityManager activityManager = (ActivityManager)context.getSystemService(context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo>
-                runningServices = activityManager.getRunningServices(100);
-        if (runningServices.size() < 0 ){
-            return false;
-        }
-        for (int i = 0;i<runningServices.size();i++){
-            ComponentName service = runningServices.get(i).service;
-            if (service.getClassName().contains(className)){
-                return true;
-            }
-        }
-        return false;
     }
 }

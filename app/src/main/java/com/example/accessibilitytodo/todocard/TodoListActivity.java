@@ -61,6 +61,8 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
     private float[] mRotationMatrix = new float[9];
     private float[] geomagnetic = new float[3];
     private float[] values = new float[3];
+    private float[] accelerometerValues = new float[3];
+    private float[] magneticFieldValues = new float[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,9 +132,9 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
     protected void onResume() {
         Log.i("界面状态", "onResume ");
         super.onResume();
-        Log.i("旋转加速感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_UI));
-        Log.i("角度感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI));
-        //Log.i("地磁感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_UI));
+        //Log.i("旋转加速感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_UI));
+        Log.i("角度感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI));
+        Log.i("地磁感应", "注册结果: " + mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_UI));
 
     }
 
@@ -204,64 +206,37 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            geomagnetic = sensorEvent.values;
-        }
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-            final float dT = (sensorEvent.timestamp - mTimestamp);
-            if (dT * NS2S > 2) {
-                double degreeX = sensorEvent.values[0] / Math.PI * 180;
-                double degreeY = sensorEvent.values[1] / Math.PI * 180;
-                if (Math.abs(degreeX - oldDegree[0]) > 30) {
-                    oldDegree[0] = degreeX;
-                    mTimestamp = sensorEvent.timestamp;
-                    if (Math.abs(degreeX) > 30)
-                        if (oldDegree[0] > 0) {
-                            Log.i("角度感应", "X减少" + oldDegree[0]);
-                            todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_DOWN);
-                        } else {
-                            Log.i("角度感应", "X增加" + oldDegree[0]);
-                            todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_UP);
-                        }
-                }
-                if (Math.abs(oldDegree[1] - degreeY) > 30 ) {
-                    oldDegree[1] = degreeY;
-                    mTimestamp = sensorEvent.timestamp;
-                    if (Math.abs(degreeY) > 30)
-                        if (oldDegree[1] > 0) {
-                            Log.i("角度感应", "Y增加" + oldDegree[1]);
-                            todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_UP);
-                        } else {
-                            Log.i("角度感应", "Y减少" + oldDegree[1]);
-                            todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_DOWN);
-                        }
-
-                }
-            }
-        }
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            final float dT = (sensorEvent.timestamp - mTimestamp);
-            if (dT * NS2S > 2) {
-                SensorManager.getRotationMatrix(mRotationMatrix, null, sensorEvent.values, geomagnetic);
-                SensorManager.getOrientation(mRotationMatrix, values);
-
-                double degreeZ = Math.toDegrees(values[0]);
-                double degreeX = Math.toDegrees(values[1]);
-                double degreeY = Math.toDegrees(values[2]);
-                if (Math.abs(degreeX - oldDegree[0]) > 30) {
-                    mTimestamp = sensorEvent.timestamp;
-                    oldDegree[0] = degreeX;
+            accelerometerValues = sensorEvent.values;
+        }
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            magneticFieldValues = sensorEvent.values;
+        }
+        final float dd = (sensorEvent.timestamp - mTimestamp);
+        if (dd * NS2S > 2) {
+            float[] values = new float[3];
+            float[] R = new float[9];
+            SensorManager.getRotationMatrix(R, null, accelerometerValues,
+                    magneticFieldValues);
+            SensorManager.getOrientation(R, values);
+            double degreeX = (float) Math.toDegrees(values[1]);
+            double degreeY = (float) Math.toDegrees(values[2]);
+            if (Math.abs(degreeX - oldDegree[0]) > 30) {
+                oldDegree[0] = degreeX;
+                mTimestamp = sensorEvent.timestamp;
+                if (Math.abs(degreeX) > 30)
                     if (oldDegree[0] > 0) {
                         Log.i("角度感应", "X减少" + oldDegree[0]);
-                        todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_DOWN);
+                        todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_UP);
                     } else {
                         Log.i("角度感应", "X增加" + oldDegree[0]);
-                        todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_UP);
+                        todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_X_DOWN);
                     }
-                }
-                if (Math.abs(oldDegree[1] - degreeY) > 30) {
-                    mTimestamp = sensorEvent.timestamp;
-                    oldDegree[1] = degreeY;
+            }
+            if (Math.abs(oldDegree[1] - degreeY) > 30) {
+                oldDegree[1] = degreeY;
+                mTimestamp = sensorEvent.timestamp;
+                if (Math.abs(degreeY) > 30)
                     if (oldDegree[1] > 0) {
                         Log.i("角度感应", "Y增加" + oldDegree[1]);
                         todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_UP);
@@ -270,9 +245,9 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
                         todolistview.sendAccessibilityEvent(strongAccessibilityService.EVENT_ROTATE_ACCELERATE_Y_DOWN);
                     }
 
-                }
             }
         }
+
         if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE) {//陀螺仪角度发生变化
             final float dT = (sensorEvent.timestamp - mTimestamp);
             if (dT * NS2S > 2) {
