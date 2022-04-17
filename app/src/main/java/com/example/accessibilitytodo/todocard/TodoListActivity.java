@@ -184,6 +184,8 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
             } while(cursor.moveToNext());
         }
 
+        todoTextView.setContentDescription("当前还有"+todoList.size()+"项待完成事项");
+        doneTextView.setContentDescription("当前已完成"+todoList.size()+"项事项");
         todoAdapter.setData(todoList);
         doneAdapter.setData(doneList);
         todoAdapter.setDoneCardViewAdapter(doneAdapter);
@@ -233,6 +235,7 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
             todoList.add(card);
             todoAdapter.setData(todoList);
             todoAdapter.notifyDataSetChanged();
+            todoTextView.setContentDescription("当前还有"+todoList.size()+"项待完成事项");
         }else  if ((requestCode == ADD_RESULT_NOTIFY_TODO || requestCode==ADD_RESULT_NOTIFY_DONE)&& resultCode == ADD_RESULT_OK) {
             if(requestCode == ADD_RESULT_NOTIFY_TODO ) {
                 for (int i = 0; i < todoList.size(); i++) {
@@ -244,6 +247,7 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
                         todoList.add(card);
                         todoAdapter.setData(todoList);
                         todoAdapter.notifyDataSetChanged();
+                        todoTextView.setContentDescription("当前还有"+todoList.size()+"项待完成事项");
                         break;
                     }
                 }
@@ -253,7 +257,6 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
                     if (card.getId().equals(data.getStringExtra("id"))) {
                         card.setContent(data.getStringExtra("content"));
                         card.setDate(data.getStringExtra("date"));
-
                         todoList.add(card);
                         doneList.remove(i);
                         doneAdapter.setData(doneList);
@@ -261,6 +264,8 @@ public class TodoListActivity extends AppCompatActivity implements SensorEventLi
                         doneAdapter.notifyItemRangeChanged(i, doneList.size());
                         todoAdapter.setData(todoList);
                         todoAdapter.notifyDataSetChanged();
+                        todoTextView.setContentDescription("当前还有"+todoList.size()+"项待完成事项");
+                        doneTextView.setContentDescription("当前已完成"+todoList.size()+"项事项");
                         break;
                     }
                 }
